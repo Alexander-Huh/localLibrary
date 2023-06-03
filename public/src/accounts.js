@@ -66,46 +66,37 @@ const findAuthor = (id, authors) => {
 
 
 function getBooksPossessedByAccount(account, books, authors) {
-    // default value
-    let result = [];
+    // return value
+    let result;
 
     // destructing id parameter from account object
     const {id} = account;
 
 const borrowedBooks = getBorrowedBooks(id, books);
-
 // nest each authors info inside of book object in borrowedBooks
-for(const index in borrowedBooks){
+result= borrowedBooks.map(element => {
+  let result = {};
+  const authorId = element.authorId;
+  const author = findAuthor(authorId,authors);
+  const firstName = author.name.first;
+  const lastName = author.name.last;
 
-const borrowedBook = borrowedBooks[index];
-const authorId = borrowedBook.authorId;
-const bookId = borrowedBook.id;
-const title = borrowedBook.title;
-const genre = borrowedBook.genre;
-const author = findAuthor(authorId,authors);
-const firstName = author.name.first;
-const lastName = author.name.last;
-
-result.push(
-  {
-    id:bookId,
-    title:title,
-    genre:genre,
-    authorId:authorId,
-    author: {
+  result.id = element.id;
+  result.title=element.title,
+    result.genre=element.genre,
+    result.authorId=element.authorId,
+    result.author= {
       id:author.id,
       name: {
       first:firstName,
       last:lastName,            
       },
     },
-    borrows:[
-      borrowedBook.borrows
+    result.borrows=[
+      element.borrows
     ]
-  }
-);
-}
-
+  return result
+})
 
 return result;
 }
